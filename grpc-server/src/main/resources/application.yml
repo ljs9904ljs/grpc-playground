@@ -1,0 +1,7 @@
+spring.application.name: grpc-server
+server:
+  port: 7000
+
+grpc:
+  server:
+    port: 50000
