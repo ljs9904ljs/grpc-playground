@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "com.example.api.student.grpc";
+option java_outer_classname = "StudentProto";
+
+service StudentService {
+  rpc GetStudent (StudentRequest) returns (StudentResponse);
+}
+
+message StudentRequest {
+  int64 id = 1;
+  string email = 2;
+  string password = 3;
+  string name = 4;
+}
+
+message StudentResponse {
+  int64 id = 1;
+  string email = 2;
+  string password = 3;
+  string name = 4;
+}
