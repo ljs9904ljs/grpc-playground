@@ -9,11 +9,12 @@ plugins {
 }
 
 group = "com.example"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 
 val protobufVersion = "4.28.3"
 val grpcVersion = "1.68.1"
 val grpcKotlinVersion = "1.4.1"
+val coroutineVersion = "1.9.0"
 
 java {
     toolchain {
@@ -37,13 +38,18 @@ dependencies {
 
     // [gRPC]
     implementation("io.grpc:grpc-protobuf:${grpcVersion}")          // Protobuf 메시지와 gRPC의 통합을 지원
-    implementation("io.grpc:grpc-netty-shaded:${grpcVersion}")      // Netty Shaded 사용(gRPC 서버와 클라이언트의 Netty 전송 계층을 제공)
+    implementation("io.grpc:grpc-netty-shaded:${grpcVersion}")      // Netty Shaded 사용(gRPC 서버와 클라이언트의 Netty 전송 계층을 제공). gRPC 통신을 위해 netty를 사용한다.
     implementation("io.grpc:grpc-stub:${grpcVersion}")              // gRPC 클라이언트 스텁을 생성
     implementation("io.grpc:grpc-kotlin-stub:${grpcKotlinVersion}") // Kotlin을 위해, gRPC 클라이언트 스텁을 생성
 
     // grpc-kotlin 라이브러리가 coroutine을 사용하게 한다.
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutineVersion}")
+    // controller에서 노출하는 API에 suspend function을 원활히 사용하기 위해 필요하다.
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutineVersion}")
+
+    // [swagger]
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -77,9 +83,12 @@ protobuf {
                 create("grpc")
                 create("grpc-kt")
             }
-            it.builtins {
-                create("kotlin")
-            }
+
+            // 이거 작성하면 protoc로 kotlin_out 생성하는 것과 같은 결과물이 나온다.
+            // 그래서 쓸모가 없다.
+//            it.builtins {
+//                create("kotlin")
+//            }
         }
     }
 }
